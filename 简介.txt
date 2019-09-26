@@ -1,0 +1,14 @@
+本文包含一个109页的PPT讲述Android程序结构设计的理论和方法，附带一个项目案例ProgramStructureGPS.20190922.zip；
+其中的内容有：
+Android app的界面的树结构与对界面的访问；
+Activity和Activity通信的方法
+Service和Activity通信的方法；
+对“单纯计算”进行封装；
+用阅读信息量衡量程序结构的复杂度；
+一个Activity对应的，按照硬件划分模块的，内部结构和外部关系的架构模式；
+双向绑定的应用场景
+数据流图；
+
+
+程序  结构  Android  设计  架构
+
