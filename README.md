@@ -1,8 +1,9 @@
-# Internal-Structure-and-External-Relations-Architecture-Pattern
 
 # 程序结构设计理论(Android)
 ### 作者：邓能财
 ### 2019年9月24日
+
+本文博客园地址：https://www.cnblogs.com/definedone/p/11586487.html
 
 ### 个人简介
 姓名：邓能财
@@ -14,12 +15,12 @@
 
 [明德厚学，爱国荣校]
 
-本文的PPT版、以及作为案例的App项目可以从这里下载：[程序结构设计理论(Android)_20190924_.zip](https://download.csdn.net/download/definedone/11823862)
+本文的PPT版、以及作为案例的App项目可以从这里下载：[程序结构设计理论(Android版)_20191108.zip](https://download.csdn.net/download/definedone/11965738)
 或者
-链接：[百度网盘-程序结构设计理论(Android)_20190926.zip](https://pan.baidu.com/s/1-hNekkDYX1tQ0uIFHK84rg)
-提取码：jmu5
+链接：[百度网盘-程序结构设计理论(Android版)_20191108.zip](https://pan.baidu.com/s/1BtcNGpvTnwTIoek-WRAA5Q)
+提取码：xsu3
 或者
-[程序结构设计理论(Android)_20190926](https://github.com/definedone/Internal-Structure-and-External-Relations-Architecture-Pattern)
+[Github-程序结构设计理论(Android版)_20191108.zip](https://github.com/definedone/Internal-Structure-and-External-Relations-Architecture-Pattern)
 
 #### 目录
 一、android程序中，对界面的访问与更新
@@ -52,10 +53,21 @@ HhhViewGroup hhhViewGroup = (HhhViewGroup)FindViewUtil.find(rootView, child -> c
 ```
 
 ##### 3.在某个Activity中访问其他Activity
+在App中维护一个ArrayList<WeakReference<Activity>>列表，可以用ActivityLifecycleCallbacks实现，在其中执行
 ```
-BbbActivity bbbActivity = CollectionUtil.find(((App)getApplication()).getActivityList(), item -> item instanceof BbbActivity);
+mActivityList.add(new WeakReference<Activity>(activity));
 ```
-其中(App)getApplication()).getActivityList()需要实现一个Activity列表，可以用ActivityLifecycleCallbacks实现；
+添加元素；
+执行
+```
+WeakReference<Activity> thisActivity = CollectionUtil.find(((App)getApplication()).getActivityList(), item -> item.get() != null && item.get() == activity);
+mActivityList.remove(thisActivity);
+```
+移出元素；
+访问一个Activity：
+```
+BbbActivity bbbActivity = CollectionUtil.find(((App)getApplication()).getActivityList(), item -> item.get() != null && item.get() instanceof BbbActivity).get();
+```
 
 ##### 4.LllEditText的文本改变时，更新KkkViewGroup的方法
 ```
@@ -104,14 +116,23 @@ kkkViewGroup.setXxxOnClickListener(() -> {((CccActivity)kkkViewGroup.getContext(
 ##### 1.Activity访问Service
 方法一、bindService()
 方法二、维护Service列表
-在App中定义ArrayList<Service> mServiceList变量，在XxxService的onCreate()中mServiceList.add(this)，在onDestroy()中mServiceList.remove(this);
+在App中定义ArrayList<WeakReference<Service>> mServiceList变量，在XxxService的onCreate()中
 ```
-XxxService xxxService = CollectionUtil.find(((App)getApplication()).getServiceList(), item -> item instanceof XxxService);
+mServiceList.add(new WeakReference(this))
+```
+在onDestroy()中
+```
+WeakReference<Service> thisService = CollectionUtil.find(((App)getApplication()).getServiceList(), item -> item.get() != null && item.get() == this);
+mServiceList.remove(thisService);
+```
+访问Service：
+```
+XxxService> xxxService = CollectionUtil.find(((App)getApplication()).getServiceList(), item -> item.get() != null && item.get() instanceof XxxService).get();
 ```
 
-##### 2.在Service中更新Activity
+2.在Service中更新Activity
 ```
-BbbActivity bbbActivity = CollectionUtil.find(((App)getApplication()).getActivityList(), item -> item instanceof BbbActivity);
+BbbActivity bbbActivity = CollectionUtil.find(((App)getApplication()).getActivityList(), item -> item.get() != null && item.get() instanceof BbbActivity).get();
 bbbActivity.refresh(data);
 ```
 
@@ -1053,9 +1074,9 @@ B.例子二
 ### 十、作为例子的App
 
 见附件文件：ProgramStructureGPS.20190922.zip，这是一个Android项目的压缩文件；
-本文的PPT版、以及作为案例的App项目可以从这里下载：[程序结构设计理论(Android)_20190924_.zip](https://download.csdn.net/download/definedone/11823862)
+本文的PPT版、以及作为案例的App项目可以从这里下载：[程序结构设计理论(Android版)_20191108.zip](https://download.csdn.net/download/definedone/11965738)
 或者
-链接：[百度网盘-程序结构设计理论(Android)_20190926.zip](https://pan.baidu.com/s/1-hNekkDYX1tQ0uIFHK84rg)
-提取码：jmu5
+链接：[百度网盘-程序结构设计理论(Android版)_20191108.zip](https://pan.baidu.com/s/1BtcNGpvTnwTIoek-WRAA5Q)
+提取码：xsu3
 或者
-[程序结构设计理论(Android)_20190926](https://github.com/definedone/Internal-Structure-and-External-Relations-Architecture-Pattern)
+[Github-程序结构设计理论(Android)_20190926](https://github.com/definedone/Internal-Structure-and-External-Relations-Architecture-Pattern)
